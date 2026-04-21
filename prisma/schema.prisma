@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(uuid())
+  email          String    @unique // MUST validate @cmu.ac.th
+  passwordHash   String?   
+  oauthProvider  String?   
+  oauthId        String?
+  name           String?   // Custom display name
+  role           Role      @default(STUDENT)
+  hasAcceptedToS Boolean   @default(false)
+  
+  profile        StudentProfile?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model StudentProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 1. Personal Information
+  title           String   // E.g., Mr., Ms., etc.
+  firstName       String
+  lastName        String
+  gender          String
+  dateOfBirth     DateTime
+  phone           String
+  address         String
+  parentPhone     String
+  
+  // Media & Attachments 
+  // (Assuming URL is stored in DB after uploading to a storage bucket)
+  profilePictureUrl String? // Should represent student uniform photo within 3-6 months
+
+  // 2. Educational Background
+  educationLevel  String
+  institution     String
+  faculty         String?
+  major           String
+  coopAdvisorName String?
+  advisorPhone    String?
+  
+  internship      InternshipDetails?
+  files           FileAttachment[]
+  leaveRequests   LeaveRequest[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model InternshipDetails {
+  id               String   @id @default(uuid())
+  profileId        String   @unique
+  profile          StudentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  // 3. Internship Details
+  internshipStatus String
+  position         String
+  startDate        DateTime
+  endDate          DateTime
+  departmentUnit   String
+  supervisorName   String
+  additionalDetails String?
+  rejectReason    String?
+
+  // Snapshot of student personal info at submission time
+  snapshotTitle      String?
+  snapshotFirstName  String?
+  snapshotLastName   String?
+  snapshotPhone      String?
+  snapshotGender     String?
+  snapshotProfilePic String?
+  snapshotAddress    String?
+  snapshotDOB        DateTime?
+  snapshotParentPhone String?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model FileAttachment {
+  id              String   @id @default(uuid())
+  profileId       String
+  profile         StudentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  // 4. Media & Attachments
+  fileName        String
+  fileUrl         String
+  fileType        String   // application/pdf, image/png, image/jpeg
+  fileSize        Int      // Must be < 5MB
+
+  documentType    String?  // TRANSCRIPT, RESUME, OFFER_LETTER
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  rejectReason    String?
+
+  createdAt       DateTime @default(now())
+}
+
+model LeaveRequest {
+  id              String   @id @default(uuid())
+  profileId       String
+  profile         StudentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  leaveType       String   // "ลาป่วย" or "ลากิจ"
+  startDate       DateTime
+  endDate         DateTime
+  reason          String   @db.Text
+  attachmentUrl   String?
+  attachmentName  String?
+
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  action      String   // e.g., "APPROVE_DOC", "REJECT_DOC", "APPROVE_LEAVE", "REJECT_LEAVE", "UPDATE_INFO", "EXPORT"
+  actorName   String   // The Admin/Professor's name
+  actorRole   String?  // The role of the actor (ADMIN, STUDENT)
+  targetName  String   // The Student's name
+  details     String?  // Rejection notes or update details
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt]) // Critical for performance
+  @@index([action])
+}
