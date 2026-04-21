@@ -413,7 +413,7 @@ export default function DashboardClient({ profile, recentActivities = [] }: { pr
                         )}
                       </p>
                       <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-wider">
-                        {dayjs(act.createdAt).format('D MMM YYYY • HH:mm')}
+                        {hasMounted ? dayjs(act.createdAt).format('D MMM YYYY • HH:mm') : "Loading..."}
                       </p>
                     </div>
                   </div>

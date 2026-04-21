@@ -161,7 +161,7 @@ export default function DashboardClient({ stats, recentSubmissions, activeIntern
                               {hasMounted ? dayjs(item.createdAt).fromNow() : "..."}
                             </span>
                             <span className="font-medium text-gray-400 text-[11px] truncate">
-                              {dayjs(item.createdAt).format('DD MMM YYYY')}
+                              {hasMounted ? dayjs(item.createdAt).format('DD MMM YYYY') : "..."}
                             </span>
                           </div>
                         </td>

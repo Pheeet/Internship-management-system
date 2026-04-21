@@ -202,7 +202,7 @@ export default function ApplicationReviewDrawer({ isOpen, onClose, internship, a
     return () => {
       cancelled = true;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, internship]);
 
   const handleClose = () => {
@@ -352,8 +352,8 @@ export default function ApplicationReviewDrawer({ isOpen, onClose, internship, a
                         setIsEditMode(!isEditMode);
                       }}
                       className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${isEditMode
-                          ? "bg-red-50 text-red-600 hover:bg-red-100"
-                          : "bg-teal-50 text-teal-600 hover:bg-teal-100"
+                        ? "bg-red-50 text-red-600 hover:bg-red-100"
+                        : "bg-teal-50 text-teal-600 hover:bg-teal-100"
                         }`}
                     >
                       {isEditMode ? (
@@ -760,8 +760,8 @@ export default function ApplicationReviewDrawer({ isOpen, onClose, internship, a
                               type="button"
                               onClick={() => setFileReviews(prev => ({ ...prev, [activeFile.id]: { status: 'APPROVED', reason: '' } }))}
                               className={`flex items-center gap-2 px-5 py-2 rounded-full text-[12px] font-black transition-all ${fileReviews[activeFile.id]?.status === 'APPROVED'
-                                  ? "bg-green-500 text-white shadow-md"
-                                  : "bg-gray-100 text-gray-400 hover:bg-green-50 hover:text-green-600"
+                                ? "bg-green-500 text-white shadow-md"
+                                : "bg-gray-100 text-gray-400 hover:bg-green-50 hover:text-green-600"
                                 }`}
                             >
                               <CheckCircle2 className="w-4 h-4" />
@@ -771,8 +771,8 @@ export default function ApplicationReviewDrawer({ isOpen, onClose, internship, a
                               type="button"
                               onClick={() => setFileReviews(prev => ({ ...prev, [activeFile.id]: { ...prev[activeFile.id], status: 'REJECTED' } }))}
                               className={`flex items-center gap-2 px-5 py-2 rounded-full text-[12px] font-black transition-all ${fileReviews[activeFile.id]?.status === 'REJECTED'
-                                  ? "bg-red-500 text-white shadow-md"
-                                  : "bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                                ? "bg-red-500 text-white shadow-md"
+                                : "bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-600"
                                 }`}
                             >
                               <XCircle className="w-4 h-4" />
